@@ -1,0 +1,65 @@
+<form [formGroup]="form" (ngSubmit)="enviar()">
+  <label>
+    Monto Inicial:
+    <input formControlName="montoInicial" type="number" />
+  </label>
+  <div *ngIf="form.get('montoInicial')?.invalid && form.get('montoInicial')?.touched">
+    Monto debe ser mayor a 0
+  </div>
+
+  <label>
+    Tasa de Interés (%):
+    <input formControlName="tasaInteres" type="number" />
+  </label>
+  <div *ngIf="form.get('tasaInteres')?.invalid && form.get('tasaInteres')?.touched">
+    Tasa debe ser mayor a 0
+  </div>
+
+  <label>
+    Años:
+    <input formControlName="anios" type="number" />
+  </label>
+  <div *ngIf="form.get('anios')?.invalid && form.get('anios')?.touched">
+    Años debe estar entre 1 y 50
+  </div>
+
+  <button type="submit" [disabled]="form.invalid">Calcular</button>
+</form>
+
+<div *ngIf="resultado">
+  <h3>Resultado</h3>
+  <ngx-charts-line-chart
+    [view]="[700, 400]"
+    [scheme]="{ domain: ['blue', 'red'] }"
+    [results]="[
+      { name: 'Compuesto', series: resultado.interes_compuesto.map(r => ({ name: r.anio, value: r.monto })) },
+      { name: 'Simple', series: resultado.interes_simple.map(r => ({ name: r.anio, value: r.monto })) }
+    ]"
+    [xAxis]="true"
+    [yAxis]="true"
+    [legend]="true"
+    [autoScale]="true">
+  </ngx-charts-line-chart>
+</div>
+
+<h3>Historial</h3>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Fecha</th>
+      <th>Monto Inicial</th>
+      <th>Tasa %</th>
+      <th>Años</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let calc of historial">
+      <td>{{ calc.id }}</td>
+      <td>{{ calc.fecha }}</td>
+      <td>{{ calc.montoInicial }}</td>
+      <td>{{ calc.tasaInteres }}</td>
+      <td>{{ calc.anios }}</td>
+    </tr>
+  </tbody>
+</table>
